@@ -2,117 +2,42 @@ import os
 from dotenv import load_dotenv
 from pypdf import PdfReader
 from openai import OpenAI
+import gradio as gr
 
-# =========================
-# Configuration
-# =========================
-
-PDF_PATH = "Data Entry.pdf"
-MODEL = "poolside/laguna-m.1:free"
-BASE_URL = "https://openrouter.ai/api/v1"
-
-# =========================
-# Load Environment Variables
-# =========================
-
-load_dotenv()
-
-API_KEY = os.getenv("OPENROUTER_API_KEY")
-
-if not API_KEY:
-    raise ValueError(
-        "OPENROUTER_API_KEY was not found.\n"
-        "Please add it to your .env file."
-    )
-
-# =========================
-# Create OpenAI Client
-# =========================
-
+# Load environment variables
+load_dotenv(override=True)
 client = OpenAI(
-    api_key=API_KEY,
-    base_url=BASE_URL,
+    api_key=os.getenv("OPENROUTER_API_KEY"),
+    base_url="https://openrouter.ai/api/v1",
 )
 
-# =========================
-# Read PDF
-# =========================
+# Extract text from the PDF
+reader = PdfReader("Data Entry.pdf")
+text = ""
+for page in reader.pages:
+    text += page.extract_text() + "\n"
 
-def extract_pdf_text(pdf_path: str) -> str:
-    """Extract all text from a PDF file."""
+# Function to handle the chat logic
+def get_career_advice(user_question):
+    system_prompt = f"you are my assistant. you are responsible for replying to questions about my career. you have my cv text here:\n{text}"
+    
+    response = client.chat.completions.create(
+        model="poolside/laguna-m.1:free",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_question}
+        ]
+    )
+    return response.choices[0].message.content
 
-    reader = PdfReader(pdf_path)
-    text = ""
+# Gradio interface with English labels
+demo = gr.Interface(
+    fn=get_career_advice,
+    inputs=gr.Textbox(label="Ask about your career", placeholder="What is my university?"),
+    outputs=gr.Markdown(label="Assistant Response"),
+    title="Career Assistant",
+    description="Ask any question regarding your career based on your CV."
+)
 
-    for page in reader.pages:
-        page_text = page.extract_text()
-        if page_text:
-            text += page_text + "\n"
-
-    return text
-
-
-cv_text = extract_pdf_text(PDF_PATH)
-
-# =========================
-# System Prompt
-# =========================
-
-system_prompt = f"""
-You are my professional AI career assistant.
-
-Your job is to answer questions ONLY using the information
-contained in my CV.
-
-Rules:
-- Answer only career-related questions.
-- Never invent information.
-- If the answer is not found in the CV, say:
-  "I couldn't find that information in your CV."
-- Keep your answers clear and professional.
-
-Here is my CV:
-
-{cv_text}
-"""
-
-# =========================
-# Chat Loop
-# =========================
-
-print("=" * 50)
-print("CV Assistant is Ready!")
-print("Type 'exit' to quit.")
-print("=" * 50)
-
-while True:
-
-    user_prompt = input("\nAsk a question: ").strip()
-
-    if user_prompt.lower() == "exit":
-        print("Goodbye!")
-        break
-
-    try:
-
-        response = client.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {
-                    "role": "system",
-                    "content": system_prompt,
-                },
-                {
-                    "role": "user",
-                    "content": user_prompt,
-                },
-            ],
-        )
-
-        reply = response.choices[0].message.content
-
-        print("\nAssistant:")
-        print(reply)
-
-    except Exception as e:
-        print(f"\nAn error occurred:\n{e}")
+if __name__ == "__main__":
+    demo.launch(share=True)
