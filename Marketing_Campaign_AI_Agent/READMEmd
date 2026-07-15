@@ -1,0 +1,258 @@
+# 🚀 Marketing Campaign AI Agent
+
+An AI-powered multi-agent system that generates complete marketing campaigns from a single user request.
+
+This project demonstrates how multiple AI agents can collaborate asynchronously to solve complex marketing tasks using **OpenRouter**, **AsyncOpenAI**, **Gradio**, and **Python AsyncIO**.
+
+---
+
+## ✨ Features
+
+- Intent Classification (Router Agent)
+- Greeting Detection
+- Marketing Request Detection
+- Automatic Task Decomposition
+- Parallel AI Agents
+- Marketing Content Review
+- Interactive Chat Interface with Gradio
+
+---
+
+## 🏗️ Workflow
+
+```text
+                User Message
+                     │
+                     ▼
+             Router / Decision Agent
+                     │
+        ┌────────────┴────────────┐
+        │                         │
+ Greeting Message         Marketing Request
+        │                         │
+        ▼                         ▼
+ Fixed Greeting         Task Decomposition
+                                  │
+                                  ▼
+                      Split into 3 Subtasks
+                                  │
+                                  ▼
+                     Parallel AI Specialists
+                 ┌────────┬────────┬────────┐
+                 │        │        │
+          Researcher  Copywriter  Planner
+                 │        │        │
+                 └────────┴────────┘
+                          │
+                          ▼
+                Marketing Reviewer Agent
+                          │
+                          ▼
+                 Final Optimized Campaign
+```
+
+---
+
+## 🤖 AI Agents
+
+### 1. Router Agent
+
+Classifies the user's intent into one of two categories:
+
+- Greeting
+- Marketing Request
+
+Example:
+
+```json
+{
+  "route": "marketing"
+}
+```
+
+---
+
+### 2. Decision Agent
+
+Determines the next step based on the detected intent.
+
+- Greeting → Return a predefined response.
+- Marketing → Generate subtasks.
+
+---
+
+### 3. Task Generator
+
+Splits a marketing request into three smaller tasks.
+
+Example:
+
+- Audience Research
+- Ad Copy
+- Campaign Planning
+
+---
+
+### 4. Expert Agents
+
+Three AI experts work simultaneously using **asyncio.gather()**.
+
+- 🔍 Researcher
+- ✍️ Copywriter
+- 📅 Campaign Planner
+
+---
+
+### 5. Reviewer Agent
+
+Reviews the generated marketing campaign.
+
+If the campaign requires improvements, it automatically generates a refined version.
+
+---
+
+## ⚡ Technologies Used
+
+- Python
+- AsyncIO
+- OpenRouter API
+- AsyncOpenAI SDK
+- Gradio
+- python-dotenv
+
+---
+
+## 📦 Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/Marketing-Campaign-Agent.git
+
+cd Marketing-Campaign-Agent
+```
+
+Create a virtual environment:
+
+```bash
+uv venv
+```
+
+Install dependencies:
+
+```bash
+uv sync
+```
+
+or
+
+```bash
+uv add openai
+uv add gradio
+uv add python-dotenv
+```
+
+---
+
+## 🔑 Environment Variables
+
+Create a `.env` file:
+
+```env
+OPENROUTER_API_KEY=your_api_key_here
+```
+
+---
+
+## ▶️ Run the Project
+
+```bash
+python main.py
+```
+
+or
+
+```bash
+uv run main.py
+```
+
+---
+
+## 💬 Example
+
+User:
+
+```
+Create a marketing campaign for a new coffee shop.
+```
+
+The AI will:
+
+- Classify the request
+- Split it into subtasks
+- Run multiple expert agents in parallel
+- Review the generated campaign
+- Return a polished marketing campaign
+
+---
+
+## 📁 Project Structure
+
+```
+Marketing-Campaign-Agent/
+│
+├── main.py
+├── .env
+├── README.md
+└── pyproject.toml
+```
+
+---
+
+## 📚 Learning Objectives
+
+This project demonstrates practical concepts in Agentic AI including:
+
+- AI Routing
+- Decision Making
+- Multi-Agent Systems
+- Parallel Execution
+- Async Programming
+- Prompt Engineering
+- AI Review Loops
+- Human-like Workflow Automation
+
+---
+
+## 🔮 Future Improvements
+
+- Memory Support
+- Marketing Personas
+- Social Media Campaign Generator
+- Image Generation Agent
+- Campaign Performance Estimation
+- Web Search Integration
+- Report Export (PDF)
+- Multi-language Support
+
+---
+
+## 📜 License
+
+This project is for educational purposes and showcases modern Agentic AI workflow design using OpenRouter and Python.
+
+---
+
+## 👤 Author
+
+**Mahmoud Alaa**
+
+AI Automation Engineer
+
+- AI Agents
+- Workflow Automation
+- OpenRouter
+- Python
+- Async Programming
+- n8n
+- APIs
